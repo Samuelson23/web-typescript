@@ -1,11 +1,20 @@
 export type CheckPassword = string | number;
 export type String = string;
 
-export interface UserEntry {
+export interface UserInterface {
   name: string;
   lastName: string;
-  age: number;
-  mobile: number;
-  city: string;
+  gender: "male" | "female";
+  age?: number;
+  mobile?: number;
+  city?: string;
   email: string;
+  password: string;
+  role?: "admin" | "user";
+}
+
+export interface EventInterface {
+  name: string;
+  location: string;
+  description: string;
 }

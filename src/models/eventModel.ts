@@ -1,6 +1,7 @@
-const Schema = mongoose.Schema;
+import { Schema, model } from "mongoose";
+import { EventInterface } from "../types";
 
-const EventSchema = new Schema(
+const EventSchema = new Schema<EventInterface>(
   {
     name: { type: String, required: true },
     location: { type: String, required: true },
@@ -11,5 +12,5 @@ const EventSchema = new Schema(
   }
 );
 
-const Evento = mongoose.model("Evento", EventSchema);
+const Evento = model<EventInterface>("Evento", EventSchema);
 module.exports = { Evento };

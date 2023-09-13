@@ -1,12 +1,15 @@
-const validator = require("validator");
+import { Schema, model } from "mongoose";
+import { UserInterface } from "../types";
+
 const bcrypt = require("bcrypt");
 
-const UserSchema = new Schema(
+const UserSchema = new Schema<UserInterface>(
   {
     name: { type: String, required: true },
+    lastName: { type: String, required: true },
     gender: {
       type: String,
-      enum: ["hombre", "mujer"],
+      enum: ["male", "female"],
       required: true,
     },
     role: {
@@ -14,22 +17,20 @@ const UserSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    age: { type: Number },
+    mobile: { type: Number },
+    city: { type: String },
     email: {
       type: String,
       required: true,
       unique: true,
-      validate: [validator.isEmail, "Email not valid"],
     },
     password: {
       type: String,
       required: true,
       trim: true,
-      validate: [validator.isStrongPassword],
       minlength: [8, "min 8 caracteres"],
     },
-    imagen: { type: String },
-    confirmationCode: { type: String, required: true },
-    check: { type: Boolean, default: false },
   },
   {
     timestamps: true,
@@ -46,5 +47,4 @@ UserSchema.pre("save", async function (next: any) {
   }
 });
 
-const User = mongoose.model("User", UserSchema);
-module.exports = User;
+export const User = model<UserInterface>("User", UserSchema);

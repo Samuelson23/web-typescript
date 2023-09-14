@@ -1,18 +1,23 @@
 import { User } from "../models/userModel";
 import { checkRequestRegister } from "../utils/checkRequest";
 
-export const register = async (req: any, res: any, next: any) => {
+export const registerUser = async (req: any, res: any, next: any) => {
   console.log("entro register user");
   console.log(req.body);
   try {
     const validRequestRegister = checkRequestRegister(req.body);
     const newUser = new User(validRequestRegister);
-    const savedUser = await newUser.save();
-    console.log("NEW USER", newUser);
-    if (savedUser) {
-      return res.status(200).json(validRequestRegister);
-    } else {
-      return res.status(404).json("Error al crear el usuario. Try again");
+    try {
+      const savedUser = await newUser.save();
+
+      console.log("NEW USER", newUser);
+      if (savedUser) {
+        return res.status(200).json(validRequestRegister);
+      } else {
+        return res.status(404).json("Error al crear el usuario. Try again");
+      }
+    } catch (error) {
+      return next(error);
     }
   } catch (error) {
     return next(error);
@@ -32,3 +37,7 @@ export const getAllUser = async (_req: any, res: any, next: any) => {
     return next(error);
   }
 };
+
+export const deleteUser = async (_req:any, res:any, next:any) => {
+  
+}

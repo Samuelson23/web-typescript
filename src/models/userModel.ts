@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { UserInterface } from "../types";
+import validator from "validator";
 
 const bcrypt = require("bcrypt");
 
@@ -24,6 +25,7 @@ const UserSchema = new Schema<UserInterface>(
       type: String,
       required: true,
       unique: true,
+      validate: [validator.isEmail, "email mal introducido"],
     },
     password: {
       type: String,

@@ -1,5 +1,5 @@
 export type CheckPassword = string | number;
-export type String = string;
+export type Email = `${string}@${string}.${string}`;
 
 export interface UserInterface {
   name: string;

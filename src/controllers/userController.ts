@@ -1,5 +1,6 @@
 import { User } from "../models/userModel";
 import { checkRequestRegister } from "../utils/checkRequest";
+import { generateToken, verifyToken } from "../utils/token";
 
 export const registerUser = async (req: any, res: any, next: any) => {
   console.log("entro register user");
@@ -12,6 +13,8 @@ export const registerUser = async (req: any, res: any, next: any) => {
 
       console.log("NEW USER", newUser);
       if (savedUser) {
+        const tokenUser = generateToken(newUser.id, newUser.email);
+        verifyToken(tokenUser);
         return res.status(200).json(validRequestRegister);
       } else {
         return res.status(404).json("Error al crear el usuario. Try again");
@@ -38,6 +41,4 @@ export const getAllUser = async (_req: any, res: any, next: any) => {
   }
 };
 
-export const deleteUser = async (_req:any, res:any, next:any) => {
-  
-}
+export const deleteUser = async (_req: any, _res: any, _next: any) => {};

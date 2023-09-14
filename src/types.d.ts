@@ -12,6 +12,12 @@ export interface UserInterface {
   password: string;
   role?: "admin" | "user";
 }
+export interface DecodedToken {
+  id: string;
+  email: string;
+  iat: number;
+  exp: number;
+}
 
 export interface EventInterface {
   name: string;

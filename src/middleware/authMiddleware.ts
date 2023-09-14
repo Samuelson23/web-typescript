@@ -1,5 +1,5 @@
 import { User } from "../models/userModel";
-import { DecodedToken } from "../types";
+//import { DecodedToken } from "../types";
 import { verifyToken } from "../utils/token";
 
 const dotenv = require("dotenv");
@@ -11,13 +11,7 @@ export const isAuth = async (req: any, _res: any, next: any) => {
     return next(new Error("Unauthorized. No token"));
   }
 
-  try {
-    const decoded: DecodedToken = verifyToken(token) as DecodedToken;
-    if (decoded) {
-      req.user = await User.findById(decoded.id);
-      next();
-    }
-  } catch (error) {
-    return next(error);
-  }
+  const decoded: any = verifyToken(token);
+  req.user = await User.findOne({ email: decoded.email });
+  console.log("--------REQ.USER", req.user);
 };

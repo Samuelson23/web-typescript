@@ -22,8 +22,7 @@ export const verifyToken = (token: string) => {
     throw new Error("No existe el token");
   }
   if (process.env.JWT_SECRET) {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    return decodedToken;
+    return jwt.verify(token, process.env.JWT_SECRET);
   } else {
     throw new Error("Problema con la JWT-key");
   }

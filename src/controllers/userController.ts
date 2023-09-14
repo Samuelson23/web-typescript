@@ -2,6 +2,7 @@ import { User } from "../models/userModel";
 import { checkRequestRegister } from "../utils/checkRequest";
 import { randomPassword } from "../utils/randomPass";
 import { sendMail } from "../utils/sendMail";
+import { generateToken, verifyToken } from "../utils/token";
 const bcrypt = require("bcrypt");
 
 export const registerUser = async (req: any, res: any, next: any) => {
@@ -27,6 +28,28 @@ export const registerUser = async (req: any, res: any, next: any) => {
   }
 };
 
+export const loginUser = async (req: any, res: any, _next: any) => {
+  const { email, password } = req.body;
+  const userToLogin = await User.findOne({ email });
+
+  if (userToLogin) {
+    //console.log("usertoLogin", userToLogin);
+    const comparePass = bcrypt.compareSync(password, userToLogin.password);
+    if (comparePass) {
+      const newToken: string = generateToken(userToLogin.id, userToLogin.email);
+      return res.status(200).json({
+        text: "login correcto",
+        token: newToken,
+        user: userToLogin,
+      });
+    } else {
+      return res.status(404).json("contraseña incorrecta");
+    }
+  } else {
+    return res.status(404).json("Email introducido incorrecto");
+  }
+};
+
 export const getAllUser = async (_req: any, res: any, next: any) => {
   console.log("entro get all users");
   try {
@@ -41,7 +64,13 @@ export const getAllUser = async (_req: any, res: any, next: any) => {
   }
 };
 
-export const deleteUser = async (_req: any, _res: any, _next: any) => {};
+export const deleteUser = async (req: any, _res: any, _next: any) => {
+  console.log("user from token", req.user);
+  const decodedToken = verifyToken(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDIwNTlmNmM2ZTc3YzJiZGM0ZjgyNCIsImVtYWlsIjoic2FtdWVsYmFja2VuZEBnbWFpbC5jb20iLCJpYXQiOjE2OTQ3MDcyNTksImV4cCI6MTY5NDc5MzY1OX0.GzAmQ1st-QNRvxq2qoU4RA6blC0FmUwlQLMO8MgyXxQ"
+  );
+  console.log("DECODED-------", decodedToken);
+};
 
 export const updateUser = async (_req: any, _res: any, _next: any) => {};
 

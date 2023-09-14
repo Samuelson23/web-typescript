@@ -1,5 +1,8 @@
 import { User } from "../models/userModel";
 import { checkRequestRegister } from "../utils/checkRequest";
+import { randomPassword } from "../utils/randomPass";
+import { sendMail } from "../utils/sendMail";
+const bcrypt = require("bcrypt");
 
 export const registerUser = async (req: any, res: any, next: any) => {
   console.log("entro register user");
@@ -39,3 +42,28 @@ export const getAllUser = async (_req: any, res: any, next: any) => {
 };
 
 export const deleteUser = async (_req: any, _res: any, _next: any) => {};
+
+export const updateUser = async (_req: any, _res: any, _next: any) => {};
+
+export const changePassword = async (req: any, res: any, _next: any) => {
+  const { email } = req.body;
+
+  const userPassword = await User.findOne({ email });
+
+  if (userPassword) {
+    const newPassword = randomPassword();
+    const encryptedPassword = await bcrypt.hash(newPassword, 10);
+
+    const newPassUser = await userPassword.updateOne({
+      password: encryptedPassword,
+    });
+
+    if (newPassUser) {
+      sendMail(email, newPassword, res, _next);
+      return res.status(200).json({
+        change: "ok",
+        password: `your new password is: ${newPassword}`,
+      });
+    }
+  }
+};

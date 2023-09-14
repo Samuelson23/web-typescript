@@ -12,7 +12,7 @@ export const isAuth = async (req: any, _res: any, next: any) => {
   }
 
   try {
-    const decoded = verifyToken(token);
+    const decoded: DecodedToken = verifyToken(token) as DecodedToken;
     if (decoded) {
       req.user = await User.findById(decoded.id);
       next();
